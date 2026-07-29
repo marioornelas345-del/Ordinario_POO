@@ -1,0 +1,402 @@
+@model IEnumerable<MiSalonBellezaNicteHa.Models.Cita>
+
+@{
+    ViewData["Title"] = "Panel del Administrador";
+    
+    int totalCitas = Convert.ToInt32(ViewData["TotalCitas"] ?? 0);
+    int citasConfirmadas = Convert.ToInt32(ViewData["CitasConfirmadas"] ?? 0);
+    int citasPendientes = Convert.ToInt32(ViewData["CitasPendientes"] ?? 0);
+    
+    string horaApertura = ViewData["HoraApertura"]?.ToString() ?? "09:00";
+    string horaCierre = ViewData["HoraCierre"]?.ToString() ?? "20:00";
+}
+
+<!-- Contenedor Principal del Panel de Administración -->
+<div class="container-fluid px-4 py-4 mb-5">
+    
+    <!-- Encabezado del Administrador -->
+    <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+        <div>
+            <h1 class="fw-bold text-dark mb-1">Módulo de Administración - Salón Nicté Ha</h1>
+            <p class="text-muted mb-0">Sistema de Control, Supervisión de Catálogos, Agenda, Respaldos y Notificaciones UTM.</p>
+        </div>
+        
+        <!-- BOTONES DE ACCIÓN GLOBAL DEL ADMINISTRADOR -->
+        <div class="d-flex gap-2">
+            <a href="/Admin/EnviarRecordatoriosManana" class="btn btn-primary rounded-3 fw-bold shadow-sm">
+                Enviar Recordatorios Mañana
+            </a>
+            
+            <a href="/Admin/GenerarRespaldo" class="btn btn-dark rounded-3 fw-bold shadow-sm">
+                Generar Respaldo BD
+            </a>
+        </div>
+    </div>
+
+    <!-- Alertas de Confirmación del Sistema -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
+            <h5 class="alert-heading fw-bold">Operación Exitosa:</h5>
+            <p class="mb-0">@TempData["SuccessMessage"]</p>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- SECCIÓN 1: TARJETAS DE MÉTRICAS Y HORARIO -->
+    <div class="row g-4 mb-5">
+        
+        <!-- Tarjeta 1: Total Citas -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-4 bg-primary text-white p-3">
+                <div class="card-body">
+                    <h6 class="text-white-50 text-uppercase fw-bold">Total Citas Registradas</h6>
+                    <h2 class="display-5 fw-bold my-2">@totalCitas</h2>
+                    <small>En la base de datos SQL Server</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 2: Citas Confirmadas -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-4 bg-success text-white p-3">
+                <div class="card-body">
+                    <h6 class="text-white-50 text-uppercase fw-bold">Citas Confirmadas</h6>
+                    <h2 class="display-5 fw-bold my-2">@citasConfirmadas</h2>
+                    <small>Notificadas automáticamente</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 3: Citas Pendientes -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-4 bg-warning text-dark p-3">
+                <div class="card-body">
+                    <h6 class="text-dark-50 text-uppercase fw-bold">Pendientes de Aprobación</h6>
+                    <h2 class="display-5 fw-bold my-2">@citasPendientes</h2>
+                    <small>Esperando confirmación admin</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjeta 4: Configuración de Horarios -->
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 rounded-4 bg-dark text-white p-3">
+                <div class="card-body">
+                    <h6 class="text-white-50 text-uppercase fw-bold">Horario del Salón</h6>
+                    <p class="fs-5 fw-bold my-2">@horaApertura a @horaCierre HRS</p>
+                    <small class="text-success">Configuración centralizada</small>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SECCIÓN 2: CONTROL Y SUPERVISIÓN DE AGENDA DE CITAS (CONFIRMAR, REPROGRAMAR Y CANCELAR) -->
+    <div class="card shadow-sm border-0 rounded-4 mb-5">
+        <div class="card-header bg-dark text-white p-3 d-flex justify-content-between align-items-center">
+            <h5 class="mb-0 fw-bold">Agenda de Citas y Control de Turnos</h5>
+            <span class="badge bg-secondary">Actualización en Tiempo Real</span>
+        </div>
+        <div class="card-body p-4">
+            
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th># ID Cita</th>
+                                <th>Cliente</th>
+                                <th>Servicio</th>
+                                <th>Estilista</th>
+                                <th>Fecha y Hora Inicio</th>
+                                <th>Fecha Hora Fin (+1 hr)</th>
+                                <th>Estado</th>
+                                <th class="text-center">Acciones del Administrador</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cita in Model)
+                            {
+                                <tr>
+                                    <td class="fw-bold">#@cita.Id</td>
+                                    <td>Cliente #@cita.ClienteId</td>
+                                    <td>Servicio #@cita.ServicioId</td>
+                                    <td>Estilista #@cita.EstilistaId</td>
+                                    <td>@cita.FechaHoraInicio.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>@cita.FechaHoraFin.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td>
+                                        @if (cita.Estado == "Confirmada")
+                                        {
+                                            <span class="badge bg-success px-3 py-2">Confirmada</span>
+                                        }
+                                        else if (cita.Estado == "Cancelada")
+                                        {
+                                            <span class="badge bg-danger px-3 py-2">Cancelada</span>
+                                        }
+                                        else if (cita.Estado == "Reprogramada")
+                                        {
+                                            <span class="badge bg-info text-dark px-3 py-2">Reprogramada</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning text-dark px-3 py-2">@cita.Estado</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-2">
+                                            
+                                            <!-- BOTÓN 1: CONFIRMAR CITA -->
+                                            <form action="/Admin/ConfirmarCita" method="post" style="display:inline;">
+                                                <input type="hidden" name="citaId" value="@cita.Id" />
+                                                <button type="submit" class="btn btn-sm btn-success fw-bold" @(cita.Estado == "Confirmada" ? "disabled" : "")>
+                                                    Confirmar
+                                                </button>
+                                            </form>
+
+                                            <!-- BOTÓN 2: REPROGRAMAR CITA (Abre Modal) -->
+                                            <button type="button" class="btn btn-sm btn-warning text-dark fw-bold" data-bs-toggle="modal" data-bs-target="#modalReprogramar-@cita.Id">
+                                                Reprogramar
+                                            </button>
+
+                                            <!-- BOTÓN 3: CANCELAR CITA -->
+                                            <form action="/Admin/CancelarCita" method="post" style="display:inline;">
+                                                <input type="hidden" name="citaId" value="@cita.Id" />
+                                                <button type="submit" class="btn btn-sm btn-danger fw-bold" @(cita.Estado == "Cancelada" ? "disabled" : "")>
+                                                    Cancelar
+                                                </button>
+                                            </form>
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <!-- MODAL DE REPROGRAMAR CITA PARA CADA FILA -->
+                                <div class="modal fade" id="modalReprogramar-@cita.Id" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content border-0 rounded-4 shadow">
+                                            <div class="modal-header bg-warning text-dark">
+                                                <h5 class="modal-title fw-bold">Reprogramar Cita #@cita.Id</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form action="/Admin/ReprogramarCita" method="post">
+                                                <input type="hidden" name="citaId" value="@cita.Id" />
+                                                <div class="modal-body p-4">
+                                                    <label class="form-label font-weight-bold">Seleccionar Nueva Fecha y Hora:</label>
+                                                    <input type="datetime-local" name="nuevaFecha" class="form-control rounded-3 py-2" required value="@DateTime.Now.AddDays(2).ToString("yyyy-MM-ddTHH:00")" />
+                                                    <small class="text-muted">Se recalculará la duración de 1 hora automáticamente.</small>
+                                                </div>
+                                                <div class="modal-footer bg-light">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                    <button type="submit" class="btn btn-warning text-dark fw-bold">Guardar Nueva Fecha</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-4">
+                    <p class="text-muted">No se registraron citas en la base de datos.</p>
+                </div>
+            }
+
+        </div>
+    </div>
+
+    <!-- SECCIÓN 3: CONTROL Y SUPERVISIÓN DE CATÁLOGOS (EMPLEADOS, SERVICIOS Y CLIENTES) Y REPORTE SEMANAL -->
+    <div class="row g-4">
+        
+        <!-- SUB-SECCIÓN: CONTROL DE CATÁLOGOS (Empleados, Servicios, Clientes) -->
+        <div class="col-md-7">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-header bg-dark text-white p-3">
+                    <h5 class="mb-0 fw-bold">Supervisión de Catálogos del Salón</h5>
+                </div>
+                <div class="card-body p-4">
+                    
+                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active fw-bold" id="pills-estilistas-tab" data-bs-toggle="pill" data-bs-target="#pills-estilistas" type="button" role="tab">
+                                Empleados / Estilistas
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-bold" id="pills-servicios-tab" data-bs-toggle="pill" data-bs-target="#pills-servicios" type="button" role="tab">
+                                Catálogo Servicios
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link fw-bold" id="pills-clientes-tab" data-bs-toggle="pill" data-bs-target="#pills-clientes" type="button" role="tab">
+                                Clientes Registrados
+                            </button>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="pills-tabContent">
+                        
+                        <!-- TABLA ESTILISTAS -->
+                        <div class="tab-pane fade show active" id="pills-estilistas" role="tabpanel">
+                            <table class="table table-bordered table-striped mt-3">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre del Estilista</th>
+                                        <th>Especialidad</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>#001</td>
+                                        <td>Carlos Mendoza</td>
+                                        <td>Cortes de Caballero y Barba</td>
+                                        <td><span class="badge bg-success">Disponible</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>#002</td>
+                                        <td>Ana María López</td>
+                                        <td>Uñas, Tinte y Peinados</td>
+                                        <td><span class="badge bg-success">Disponible</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- TABLA SERVICIOS -->
+                        <div class="tab-pane fade" id="pills-servicios" role="tabpanel">
+                            <table class="table table-bordered table-striped mt-3">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Servicio</th>
+                                        <th>Categoría</th>
+                                        <th>Precio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>#1</td>
+                                        <td>Corte Clásico de Hombre</td>
+                                        <td>Hombres (H)</td>
+                                        <td>$120.00 MXN</td>
+                                    </tr>
+                                    <tr>
+                                        <td>#2</td>
+                                        <td>Arreglo y Perfilado de Barba</td>
+                                        <td>Hombres (H)</td>
+                                        <td>$100.00 MXN</td>
+                                    </tr>
+                                    <tr>
+                                        <td>#5</td>
+                                        <td>Aplicación de Uñas / Manicura</td>
+                                        <td>Mujeres (M)</td>
+                                        <td>$250.00 MXN</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- TABLA CLIENTES -->
+                        <div class="tab-pane fade" id="pills-clientes" role="tabpanel">
+                            <table class="table table-bordered table-striped mt-3">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Nombre del Cliente</th>
+                                        <th>Correo</th>
+                                        <th>Teléfono</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>#1</td>
+                                        <td>Mario Isaac</td>
+                                        <td>NICTEha@gamil.com</td>
+                                        <td>9991742323</td>
+                                    </tr>
+                                    <tr>
+                                        <td>#2</td>
+                                        <td>Sofía Rodríguez</td>
+                                        <td>sofia@example.com</td>
+                                        <td>999-987-6543</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- SUB-SECCIÓN: REPORTE DE DISPONIBILIDAD DE CITAS POR SEMANA -->
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-header bg-primary text-white p-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold">Reporte Semanal de Disponibilidad</h5>
+                    <span class="badge bg-light text-dark">Lunes a Sábado</span>
+                </div>
+                <div class="card-body p-4">
+                    <p class="text-muted small">Resumen de capacidad y turnos disponibles para agendar en el Salón Nicté Ha:</p>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="fw-semibold">Lunes (Capacidad 80%)</span>
+                            <span class="text-success fw-bold">8 Turnos Libres</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 80%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="fw-semibold">Martes (Capacidad 60%)</span>
+                            <span class="text-success fw-bold">12 Turnos Libres</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: 60%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="fw-semibold">Miércoles (Capacidad 90%)</span>
+                            <span class="text-warning fw-bold">4 Turnos Libres</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 90%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="fw-semibold">Jueves a Sábado (Capacidad 95%)</span>
+                            <span class="text-danger fw-bold">2 Turnos Libres</span>
+                        </div>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: 95%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-2 text-center border-top">
+                        <button type="button" class="btn btn-outline-primary btn-sm rounded-pill px-4" onclick="window.print()">
+                            Imprimir Reporte Semanal
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>

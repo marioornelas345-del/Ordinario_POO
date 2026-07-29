@@ -1,0 +1,150 @@
+/* Estilos Principales - Mi Salón de Belleza Nicté-Ha */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,400&display=swap');
+
+:root {
+  --primary-dark: #1f0817;
+  --primary-plum: #380d28;
+  --accent-rose: #d87093;
+  --accent-gold: #e5b97d;
+  --accent-champagne: #f7e7ce;
+  --bg-light: #faf7f8;
+  --card-bg: rgba(255, 255, 255, 0.9);
+  --text-dark: #2c1a24;
+  --text-muted: #6e5967;
+  --border-subtle: rgba(216, 112, 147, 0.2);
+  --shadow-soft: 0 10px 30px rgba(56, 13, 40, 0.08);
+  --shadow-hover: 0 15px 35px rgba(56, 13, 40, 0.16);
+  --radius-lg: 16px;
+  --radius-sm: 8px;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, .brand-font {
+  font-family: 'Playfair Display', serif;
+}
+
+/* Navbar */
+.navbar-custom {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-plum));
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  padding: 0.8rem 1.5rem;
+}
+
+.navbar-custom .navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-gold) !important;
+  letter-spacing: 1px;
+}
+
+.navbar-custom .nav-link {
+  color: rgba(255, 255, 255, 0.88) !important;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-sm);
+  transition: all 0.3s ease;
+}
+
+.navbar-custom .nav-link:hover, .navbar-custom .nav-link.active {
+  color: var(--accent-gold) !important;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Buttons */
+.btn-nicte {
+  background: linear-gradient(135deg, var(--accent-rose), var(--primary-plum));
+  color: white !important;
+  border: none;
+  font-weight: 600;
+  padding: 0.65rem 1.4rem;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(216, 112, 147, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-nicte:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(216, 112, 147, 0.45);
+}
+
+.btn-nicte-gold {
+  background: linear-gradient(135deg, var(--accent-gold), #cba163);
+  color: var(--primary-dark) !important;
+  border: none;
+  font-weight: 700;
+  padding: 0.65rem 1.4rem;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(229, 185, 125, 0.35);
+  transition: all 0.3s ease;
+}
+
+.btn-nicte-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(229, 185, 125, 0.5);
+}
+
+/* Cards & Glassmorphism */
+.salon-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  overflow: hidden;
+}
+
+.salon-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Hero Section */
+.hero-banner {
+  background: linear-gradient(rgba(31, 8, 23, 0.75), rgba(56, 13, 40, 0.75)), url('https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+  color: white;
+  border-radius: 24px;
+  padding: 4rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+.hero-banner h1 {
+  font-size: 3rem;
+  color: var(--accent-gold);
+  margin-bottom: 1rem;
+}
+
+/* Badges */
+.badge-categoria {
+  background-color: var(--accent-champagne);
+  color: var(--primary-plum);
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.82rem;
+}
+
+/* Footer */
+footer.salon-footer {
+  background-color: var(--primary-dark);
+  color: rgba(255, 255, 255, 0.75);
+  padding: 2.5rem 0 1.5rem;
+  margin-top: auto;
+  border-top: 3px solid var(--accent-gold);
+}
+
+footer.salon-footer a {
+  color: var(--accent-gold);
+  text-decoration: none;
+}

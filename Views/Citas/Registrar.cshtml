@@ -1,0 +1,99 @@
+@{
+    ViewData["Title"] = "Agendar Cita";
+    int servicioIdSeleccionado = Convert.ToInt32(ViewData["ServicioSeleccionadoId"] ?? 1);
+    string nombreServicio = ViewData["NombreServicio"]?.ToString() ?? "Corte Clásico de Hombre";
+    decimal precioServicio = Convert.ToDecimal(ViewData["PrecioServicio"] ?? 120);
+
+    // Mensaje automático oficial precargado para el número 9991742323 (sin emojis)
+    string mensajeTexto = "¡Hola! Gracias por comunicarte con el Salón de Belleza Nicté Ha.\n\nBuenos días, en un momento más uno de nuestros asesores te atenderá personalmente.\n\nPara agendar tu cita, resolver dudas o realizar algún cambio de horario, te recordamos nuestros horarios de atención:\n\nLunes a Sábado: 9:00 AM – 8:00 PM\n\nDomingos: 10:00 AM – 4:00 PM\n\nQuedamos a tu completa disposición. ¡Te esperamos para consentirte!";
+    string mensajeUrlEncoded = Uri.EscapeDataString(mensajeTexto);
+    string whatsappUrl = $"https://api.whatsapp.com/send?phone=529991742323&text={mensajeUrlEncoded}";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="card shadow-lg border-0 rounded-4">
+                
+                <!-- Encabezado del Formulario -->
+                <div class="card-header bg-primary text-white p-4">
+                    <h4 class="mb-1 fw-bold">Paso 1: Agendar tu Cita</h4>
+                    <p class="mb-0 text-white-50">Completa la información para apartar tu turno en Salón Nicté Ha.</p>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <!-- SECCIÓN DE ENVÍO DE MENSAJE AUTOMÁTICO AL NÚMERO 9991742323 -->
+                    <div class="card bg-light border-success mb-4 p-3 rounded-3">
+                        <h6 class="fw-bold text-success mb-2">Contacto Directo por WhatsApp / SMS (9991742323):</h6>
+                        <p class="small text-muted mb-2">Envía el mensaje automático oficial de atención al cliente al número <strong>9991742323</strong> para notificar al asesor del salón.</p>
+                        <a href="@whatsappUrl" target="_blank" class="btn btn-success fw-bold w-100 rounded-3 py-2 shadow-sm">
+                            Enviar mensaje al asesor
+                        </a>
+                    </div>
+
+                    <!-- Formulario POST que envía los datos a CitasController/AgendarTurno -->
+                    <form action="/Citas/AgendarTurno" method="post">
+                        
+                        <!-- Selección de Servicio -->
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold fw-semibold">Servicio Solicitado</label>
+                            <select name="servicioId" class="form-select rounded-3 py-2 fs-6 fw-bold text-dark">
+                                <option value="1" selected="@(servicioIdSeleccionado == 1)">Corte Clásico de Hombre - $120.00 MXN</option>
+                                <option value="2" selected="@(servicioIdSeleccionado == 2)">Arreglo y Perfilado de Barba - $100.00 MXN</option>
+                                <option value="3" selected="@(servicioIdSeleccionado == 3)">Combo: Corte + Barba - $170.00 MXN</option>
+                                <option value="4" selected="@(servicioIdSeleccionado == 4)">Corte de Cabello para Mujer - $120.00 MXN</option>
+                                <option value="5" selected="@(servicioIdSeleccionado == 5)">Aplicación de Uñas / Manicura - $250.00 MXN</option>
+                                <option value="6" selected="@(servicioIdSeleccionado == 6)">Maquillaje Profesional - $200.00 MXN</option>
+                                <option value="7" selected="@(servicioIdSeleccionado == 7)">Peinados y Peinado Social - $130.00 MXN</option>
+                            </select>
+                            <small class="text-muted">Puedes cambiar el servicio si lo deseas.</small>
+                        </div>
+
+                        <!-- ID del Cliente -->
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold fw-semibold">ID o Número de Cliente</label>
+                            <input type="number" name="clienteId" class="form-control rounded-3" required value="1" />
+                        </div>
+
+                        <!-- Selección de Estilista -->
+                        <div class="mb-3">
+                            <label class="form-label font-weight-bold fw-semibold">Estilista de tu Preferencia</label>
+                            <select name="estilistaId" class="form-select rounded-3">
+                                <option value="1">Estilista Principal (Asignación Automática)</option>
+                                <option value="2">Ana María - Especialista en Color y Peinados</option>
+                                <option value="3">Carlos Mendoza - Barbero Máster</option>
+                            </select>
+                        </div>
+
+                        <!-- Selección de Fecha y Hora -->
+                        <div class="mb-4">
+                            <label class="form-label font-weight-bold fw-semibold">Fecha y Hora Elegida</label>
+                            <input type="datetime-local" name="horaElegida" class="form-control rounded-3 py-2" required value="@DateTime.Now.AddDays(1).ToString("yyyy-MM-ddTHH:00")" />
+                            <small class="text-muted">Tu cita durará exactamente 1 hora desde la hora seleccionada.</small>
+                        </div>
+
+                        <!-- Resumen destacado del pago -->
+                        <div class="alert alert-info border-0 rounded-3 d-flex justify-content-between align-items-center mb-4">
+                            <div>
+                                <span class="d-block text-muted small">Servicio pre-seleccionado:</span>
+                                <strong>@nombreServicio</strong>
+                            </div>
+                            <span class="fs-4 fw-bold text-success">$@precioServicio.ToString("0.00") MXN</span>
+                        </div>
+
+                        <!-- BOTÓN DE ACCIÓN: Guarda la cita y redirige directamente a la pantalla de Pago -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success py-3 rounded-3 fw-bold fs-5 shadow">
+                                Guardar Cita y Proceder al Pago →
+                            </button>
+                            <a href="/Servicios" class="btn btn-outline-secondary py-2 rounded-3">Volver al Catálogo de Servicios</a>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

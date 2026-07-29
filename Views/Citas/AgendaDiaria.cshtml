@@ -1,0 +1,67 @@
+@model IEnumerable<MiSalonBellezaNicteHa.Models.Cita>
+
+@{
+    // Título de la vista de Agenda Diaria
+    ViewData["Title"] = "Agenda Diaria de Citas";
+}
+
+<!-- Contenedor principal de la agenda diaria de citas -->
+<div class="container mt-4 mb-5">
+    <!-- Encabezado con título y botón para agendar -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark">Agenda Diaria - Salón Nicté Ha</h2>
+        <a href="/Citas/Registrar" class="btn btn-primary rounded-3 fw-bold">+ Agendar Nueva Cita</a>
+    </div>
+
+    <!-- Tarjeta contenedora de la tabla de citas -->
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <div class="card-body p-4">
+            
+            <!-- Verificamos si existen citas en el modelo pasado desde CitasController -->
+            @if (Model != null && Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID Cita</th>
+                                <th>Cliente ID</th>
+                                <th>Servicio ID</th>
+                                <th>Estilista ID</th>
+                                <th>Hora Inicio</th>
+                                <th>Hora Fin (1 hr)</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Iteramos sobre cada cita registrada -->
+                            @foreach (var cita in Model)
+                            {
+                                <tr>
+                                    <td>#@cita.Id</td>
+                                    <td>@cita.ClienteId</td>
+                                    <td>@cita.ServicioId</td>
+                                    <td>@cita.EstilistaId</td>
+                                    <!-- Formato de fecha y hora inicio -->
+                                    <td>@cita.FechaHoraInicio.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <!-- Formato de fecha y hora fin (cálculo de 1 hora) -->
+                                    <td>@cita.FechaHoraFin.ToString("dd/MM/yyyy HH:mm")</td>
+                                    <td><span class="badge bg-info text-dark">@cita.Estado</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <!-- Mensaje cuando no hay citas en la base de datos -->
+                <div class="text-center py-5">
+                    <h5 class="text-muted mb-3">No hay citas agendadas para mostrar.</h5>
+                    <a href="/Citas/Registrar" class="btn btn-outline-primary rounded-3">Agendar la primera cita</a>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

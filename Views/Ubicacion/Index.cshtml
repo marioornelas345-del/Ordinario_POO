@@ -1,0 +1,77 @@
+@{
+    // Título dinámico para la pestaña del navegador
+    ViewData["Title"] = "Ubicación del Salón";
+}
+
+<!-- Contenedor principal de la página de Ubicación -->
+<div class="container mt-4 mb-5">
+    <div class="row">
+        <!-- Encabezado informativo -->
+        <div class="col-md-12 text-center mb-4">
+            <h2 class="fw-bold text-primary">¿Dónde nos encontramos?</h2>
+            <p class="text-muted fs-5">Visítanos en nuestra sucursal en Mérida, Yucatán y vive la experiencia Nicté Ha.</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Tarjeta izquierda: Información de contacto del Salón -->
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+                <h4 class="fw-bold text-dark mb-3">Información de Contacto</h4>
+                <hr />
+                <!-- Dirección física en Mérida -->
+                <div class="mb-3">
+                    <h6 class="fw-semibold text-primary">Dirección:</h6>
+                    <p class="mb-0">Paseo de Montejo #480 x 41, Col. Centro, C.P. 97000, Mérida, Yucatán, México.</p>
+                </div>
+                <!-- Número telefónico oficial -->
+                <div class="mb-3">
+                    <h6 class="fw-semibold text-primary">Teléfono de atención:</h6>
+                    <p class="mb-0 fs-5 fw-bold text-dark">9991742323</p>
+                </div>
+                <!-- Horarios de servicio -->
+                <div class="mb-3">
+                    <h6 class="fw-semibold text-primary">Horarios de Atención:</h6>
+                    <p class="mb-0">Lunes a Sábado: 9:00 AM – 8:00 PM<br />Domingos: 10:00 AM – 4:00 PM</p>
+                </div>
+                <!-- Correo oficial -->
+                <div class="mb-3">
+                    <h6 class="fw-semibold text-primary">Correo Electrónico:</h6>
+                    <p class="mb-0 fs-6 fw-bold text-dark">NICTEha@gamil.com</p>
+                </div>
+                <!-- Estado actual de la sucursal -->
+                <div class="mt-auto pt-3">
+                    <span class="badge bg-success px-3 py-2 fs-6 rounded-pill">Abierto ahora</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tarjeta derecha: Integración con Google Maps (Mérida, Yucatán) -->
+        <div class="col-md-7">
+            <div class="card shadow-sm border-0 rounded-4 overflow-hidden h-100">
+                <div class="card-header bg-dark text-white fw-bold d-flex justify-content-between align-items-center">
+                    <span>Mapa interactivo de Google Maps</span>
+                    <span class="badge bg-danger">Mérida, Yucatán</span>
+                </div>
+                <div class="card-body p-0" style="min-height: 380px;">
+                    <!-- 
+                        INTEGRACIÓN DE GOOGLE MAPS:
+                        Usamos un iframe con las coordenadas geográficas de Paseo de Montejo, Mérida, Yucatán.
+                    -->
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.048750831626!2d-89.62121492474441!3d20.980665780654316!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8f56715f5b248a31%3A0xc384bf40fb288591!2sPaseo%20de%20Montejo%2C%20M%C3%A9rida%2C%20Yuc.!5e0!3m2!1ses!2smx!4v1700000000000!5m2!1ses!2smx" 
+                        width="100%" 
+                        height="400" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+                <div class="card-footer bg-light text-center text-muted small py-2">
+                    Fácil acceso con estacionamiento privado disponible para clientes.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,135 @@
+@{
+    ViewData["Title"] = "Mi Perfil de Cliente";
+    
+    var nombre = ViewData["Nombre"] ?? "Mario Isaac (Cliente)";
+    var correo = ViewData["Correo"] ?? "NICTEha@gamil.com";
+    var telefono = ViewData["Telefono"] ?? "9991742323";
+    var fotoUrl = ViewData["FotoUrl"] ?? "/images/sin-foto.jpg";
+    var rol = ViewData["Rol"] ?? "Cliente Registrado";
+}
+
+<div class="container mt-4 mb-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            
+            <!-- Mensaje de confirmación cuando el cliente edita su perfil -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show shadow-sm mb-4" role="alert">
+                    <i class="bi bi-check-circle-fill me-2"></i> @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- Tarjeta de Perfil de Cliente -->
+            <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+                <div class="card-header bg-primary text-white p-3 d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0 fw-bold">Perfil del Cliente - Salón Nicté Ha</h4>
+                    <span class="badge bg-light text-dark px-3 py-2 fs-6">@rol</span>
+                </div>
+                
+                <div class="card-body p-4">
+                    <div class="row align-items-center">
+                        
+                        <!-- Columna izquierda: Foto de perfil del cliente -->
+                        <div class="col-md-4 text-center border-end pe-md-4 mb-3 mb-md-0">
+                            <img src="@fotoUrl" 
+                                 alt="Foto de Perfil del Cliente" 
+                                 class="img-thumbnail rounded-circle shadow-sm mb-3" 
+                                 style="width: 160px; height: 160px; object-fit: cover;" 
+                                 onerror="this.src='https://via.placeholder.com/160?text=Cliente';" />
+                            
+                            <h5 class="fw-bold mb-1">@nombre</h5>
+                            <p class="text-muted small">@rol</p>
+                        </div>
+
+                        <!-- Columna derecha: Detalles del Cliente -->
+                        <div class="col-md-8 ps-md-4">
+                            <h5 class="fw-semibold text-primary border-bottom pb-2 mb-3">Datos Personales del Cliente</h5>
+                            
+                            <div class="mb-2">
+                                <strong>Nombre completo:</strong>
+                                <p class="text-dark fs-5 mb-2">@nombre</p>
+                            </div>
+
+                            <div class="mb-2">
+                                <strong>Correo electrónico:</strong>
+                                <p class="text-dark fs-5 mb-2">@correo</p>
+                            </div>
+
+                            <div class="mb-2">
+                                <strong>Teléfono de contacto:</strong>
+                                <p class="text-dark fs-5 mb-2">@telefono</p>
+                            </div>
+
+                            <div class="mb-3">
+                                <strong>Estado de la cuenta:</strong>
+                                <span class="badge bg-success px-3 py-2 ms-2">Cliente Activo</span>
+                            </div>
+
+                            <!-- Accesos Rápidos del Cliente -->
+                            <div class="d-flex gap-2 mt-4 pt-2">
+                                <button type="button" class="btn btn-warning text-dark font-weight-bold px-4 py-2 rounded-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#modalEditarPerfilCliente">
+                                    Editar Mis Datos y Foto
+                                </button>
+                                <a href="/Citas/AgendaDiaria" class="btn btn-outline-primary fw-bold px-3 py-2 rounded-3">
+                                    Ver Mis Citas
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE EDICIÓN DEL CLIENTE -->
+<div class="modal fade" id="modalEditarPerfilCliente" tabindex="-1" aria-labelledby="modalEditarPerfilClienteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title fw-bold" id="modalEditarPerfilClienteLabel">Editar Mi Perfil de Cliente</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <form action="/Perfil/ActualizarPerfil" method="post" enctype="multipart/form-data">
+                <div class="modal-body p-4">
+                    
+                    <div class="mb-3">
+                        <label class="form-label font-weight-bold">Seleccionar nueva Foto de Perfil</label>
+                        <input type="file" name="fotoPerfil" class="form-control" accept="image/*" />
+                        <small class="text-muted">Formatos permitidos: JPG, PNG, WEBP.</small>
+                    </div>
+
+                    <hr />
+
+                    <div class="mb-3">
+                        <label class="form-label font-weight-bold">Nombre Completo</label>
+                        <input type="text" name="nombre" class="form-control" value="@nombre" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label font-weight-bold">Correo Electrónico</label>
+                        <input type="email" name="correo" class="form-control" value="@correo" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label font-weight-bold">Teléfono de Contacto</label>
+                        <input type="text" name="telefono" class="form-control" value="@telefono" required />
+                    </div>
+
+                </div>
+
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success fw-bold px-4">Guardar Cambios</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

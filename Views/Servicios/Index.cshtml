@@ -1,0 +1,147 @@
+@model IEnumerable<MiSalonBellezaNicteHa.Models.Servicio>
+
+@{
+    ViewData["Title"] = "Nuestros Servicios";
+    var filtroActual = ViewData["FiltroActual"]?.ToString() ?? "Todos";
+}
+
+<div class="container mt-4 mb-5">
+    
+    <!-- Encabezado Principal -->
+    <div class="text-center mb-4">
+        <h1 class="fw-bold text-primary display-5">Catálogo de Servicios Nicté Ha</h1>
+        <p class="text-muted fs-5">Explora nuestras especialidades para Damas y Caballeros. Haz clic en cualquier servicio para ver más información y agendar tu cita.</p>
+    </div>
+
+    <!-- BOTONES DE FILTRADO (Todos / Caballeros / Damas) SIN EMOJIS -->
+    <div class="d-flex justify-content-center gap-3 mb-5">
+        <a href="/Servicios?filtro=Todos" 
+           class="btn btn-lg rounded-pill px-4 shadow-sm @(filtroActual == "Todos" ? "btn-dark" : "btn-outline-dark")">
+            Todos los Servicios
+        </a>
+        <a href="/Servicios?filtro=H" 
+           class="btn btn-lg rounded-pill px-4 shadow-sm @(filtroActual == "H" ? "btn-primary" : "btn-outline-primary")">
+            Caballeros (H)
+        </a>
+        <a href="/Servicios?filtro=M" 
+           class="btn btn-lg rounded-pill px-4 shadow-sm @(filtroActual == "M" ? "btn-danger" : "btn-outline-danger")">
+            Damas (M)
+        </a>
+    </div>
+
+    <!-- TARJETAS DE SERVICIOS EN GRID RESPONSIVO -->
+    <div class="row g-4">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var servicio in Model)
+            {
+                <div class="col-md-6 col-lg-4">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden card-servicio hover-top">
+                        
+                        <!-- Imagen representativa del servicio -->
+                        <div class="position-relative">
+                            <img src="@servicio.ImagenUrl" 
+                                 class="card-img-top" 
+                                 alt="@servicio.Nombre" 
+                                 style="height: 220px; object-fit: cover;" />
+                            
+                            <!-- Insignia de categoría (H / M) -->
+                            <span class="position-absolute top-0 end-0 m-3 badge rounded-pill fs-6 @(servicio.CategoriaGenero == "H" ? "bg-primary" : "bg-danger")">
+                                @(servicio.CategoriaGenero == "H" ? "Caballero" : "Dama")
+                            </span>
+                        </div>
+
+                        <div class="card-body d-flex flex-column p-4">
+                            <!-- Nombre del Servicio -->
+                            <h4 class="card-title fw-bold mb-2">@servicio.Nombre</h4>
+                            
+                            <!-- Precio destacado -->
+                            <h3 class="text-success fw-bold mb-3">$@servicio.Precio.ToString("0.00") <small class="text-muted fs-6">MXN</small></h3>
+                            
+                            <!-- Breve resumen -->
+                            <p class="card-text text-muted flex-grow-1">
+                                @(servicio.DescripcionDetallada.Length > 90 ? servicio.DescripcionDetallada.Substring(0, 90) + "..." : servicio.DescripcionDetallada)
+                            </p>
+
+                            <!-- BOTÓN DE MÁS INFORMACIÓN -->
+                            <div class="mt-3">
+                                <button type="button" 
+                                        class="btn btn-outline-dark w-100 rounded-3 fw-bold py-2" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#modalServicio-@servicio.Id">
+                                    Más información
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- =========================================================================================
+                     MODAL DE DETALLES ("Más información") PARA CADA SERVICIO
+                     ========================================================================================= -->
+                <div class="modal fade" id="modalServicio-@servicio.Id" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content border-0 rounded-4 shadow">
+                            
+                            <div class="modal-header bg-dark text-white">
+                                <h5 class="modal-title fw-bold">Detalles del Servicio: @servicio.Nombre</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body p-4">
+                                <div class="row align-items-center">
+                                    <!-- Foto ampliada -->
+                                    <div class="col-md-5 mb-3 mb-md-0 text-center">
+                                        <img src="@servicio.ImagenUrl" class="img-fluid rounded-4 shadow-sm" style="max-height: 250px; object-fit: cover; width: 100%;" alt="@servicio.Nombre" />
+                                    </div>
+
+                                    <!-- Información completa -->
+                                    <div class="col-md-7 ps-md-4">
+                                        <h3 class="fw-bold text-dark">@servicio.Nombre</h3>
+                                        <div class="d-flex align-items-center gap-3 my-2">
+                                            <span class="fs-2 fw-bold text-success">$@servicio.Precio.ToString("0.00") MXN</span>
+                                            <span class="badge bg-secondary fs-6">Duración: @servicio.DuracionEstimada</span>
+                                        </div>
+                                        <hr />
+                                        <h6 class="fw-bold text-primary">¿Qué incluye este servicio?</h6>
+                                        <p class="text-secondary fs-6 lead">
+                                            @servicio.DescripcionDetallada
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- PIE DEL MODAL: BOTÓN DE AGENDAR CITA -->
+                            <div class="modal-footer bg-light p-3 d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <a href="/Citas/Registrar?servicioId=@servicio.Id" class="btn btn-success btn-lg fw-bold px-4 rounded-3">
+                                    Agendar Cita para este Servicio
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="col-12 text-center py-5">
+                <p class="text-muted fs-4">No se encontraron servicios en esta categoría.</p>
+            </div>
+        }
+    </div>
+
+</div>
+
+<!-- Estilo CSS personalizado para animar las tarjetas de servicios al pasar el cursor -->
+<style>
+    .card-servicio {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card-servicio:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.12) !important;
+    }
+</style>
