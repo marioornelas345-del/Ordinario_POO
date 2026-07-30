@@ -21,6 +21,10 @@ namespace MiSalonBellezaNicteHa.Controllers
         // -----------------------------------------------------------------------------
         public IActionResult Index()
         {
+            if (HttpContext.Session.GetString("UsuarioLogueado") == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             ViewData["Nombre"] = _nombreCliente;
             ViewData["Correo"] = _correoCliente;
             ViewData["Telefono"] = _telefonoCliente;

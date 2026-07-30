@@ -24,6 +24,10 @@ namespace MiSalonBellezaNicteHa.Controllers
         // -----------------------------------------------------------------------------
         public IActionResult Index(int citaId = 0, decimal monto = 0, string servicio = null)
         {
+            if (HttpContext.Session.GetString("UsuarioLogueado") == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             // Si venimos del flujo de Citas con datos nuevos, actualizamos la orden de pago
             if (monto > 0)
             {

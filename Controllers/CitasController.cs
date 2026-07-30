@@ -23,6 +23,10 @@ namespace MiSalonBellezaNicteHa.Controllers
         // -----------------------------------------------------------------------------
         public IActionResult Index()
         {
+            if (HttpContext.Session.GetString("UsuarioLogueado") == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
@@ -31,6 +35,10 @@ namespace MiSalonBellezaNicteHa.Controllers
         // -----------------------------------------------------------------------------
         public IActionResult Registrar(int servicioId = 1)
         {
+            if (HttpContext.Session.GetString("UsuarioLogueado") == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             // Obtenemos los datos del servicio seleccionado para pre-llenar los precios en la vista
             var servicio = ServiciosController.ObtenerServicioPorId(servicioId);
             ViewData["ServicioSeleccionadoId"] = servicio.Id;

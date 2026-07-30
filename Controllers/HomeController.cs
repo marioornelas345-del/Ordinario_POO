@@ -1,18 +1,26 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace MiSalonBellezaNicteHa.Controllers
 {
     /// <summary>
-    /// Controlador principal para el manejo de la autenticación (Login, Registro y Google OAuth).
+    /// CONTROLADOR PRINCIPAL Y DE SEGURIDAD (HomeController)
+    /// Maneja el inicio de sesión obligatorio, modal de cuentas de Google y bloqueo de acceso.
     /// </summary>
     public class HomeController : Controller
     {
         // -----------------------------------------------------------------------------
-        // ACCIÓN: Index (Página principal de Iniciar Sesión)
+        // ACCIÓN: Index (Página principal de Iniciar Sesión / Pantalla de Bloqueo)
         // -----------------------------------------------------------------------------
         public IActionResult Index()
         {
-            // Muestra la vista de Iniciar Sesión (Login)
+            // Si el usuario ya está autenticado en sesión, pasa al sistema
+            if (HttpContext.Session.GetString("UsuarioLogueado") != null)
+            {
+                return RedirectToAction("Index", "Servicios");
+            }
+
+            // Muestra la vista de Iniciar Sesión (Bloqueo de seguridad)
             return View("~/Views/Auth/Login.cshtml");
         }
 
@@ -22,16 +30,52 @@ namespace MiSalonBellezaNicteHa.Controllers
         [HttpPost]
         public IActionResult IniciarSesion(string correo, string password)
         {
-            // Validación simulada de credenciales (Admin vs Usuario)
-            if (correo == "admin@nicteha.com" && password == "1234")
+            if (!string.IsNullOrEmpty(correo) && !string.IsNullOrEmpty(password))
             {
-                // Si las credenciales son válidas, redirigimos al catálogo de servicios
+                // Inicia sesión y desbloquea el sistema
+                HttpContext.Session.SetString("UsuarioLogueado", correo);
+
+                if (correo == "admin@nicteha.com" || correo == "NICTEha@gamil.com")
+                {
+                    TempData["SuccessMessage"] = $"¡Bienvenido Administrador ({correo})!";
+                    return RedirectToAction("Index", "Admin");
+                }
+
+                TempData["SuccessMessage"] = $"¡Sesión iniciada correctamente como {correo}!";
                 return RedirectToAction("Index", "Servicios");
             }
             
-            // Mensaje de error si la contraseña o correo no coinciden
-            ViewData["ErrorMessage"] = "Correo o contraseña incorrectos. Intenta nuevamente.";
+            ViewData["ErrorMessage"] = "Por favor ingresa un correo y contraseña válidos.";
             return View("~/Views/Auth/Login.cshtml");
+        }
+
+        // -----------------------------------------------------------------------------
+        // ACCIÓN: IniciarSesionGoogleAccount (Selección de cuenta de Google Modal)
+        // -----------------------------------------------------------------------------
+        public IActionResult IniciarSesionGoogleAccount(string correo)
+        {
+            string emailFinal = string.IsNullOrEmpty(correo) ? "NICTEha@gamil.com" : correo;
+            
+            // Establece la sesión activa con la cuenta de Google seleccionada
+            HttpContext.Session.SetString("UsuarioLogueado", emailFinal);
+            TempData["SuccessMessage"] = $"¡Conectado exitosamente con tu cuenta de Google ({emailFinal})!";
+
+            if (emailFinal.ToLower().Contains("admin") || emailFinal == "NICTEha@gamil.com")
+            {
+                return RedirectToAction("Index", "Admin");
+            }
+
+            return RedirectToAction("Index", "Servicios");
+        }
+
+        // -----------------------------------------------------------------------------
+        // ACCIÓN: CerrarSesion (Bloquea el sistema de nuevo)
+        // -----------------------------------------------------------------------------
+        public IActionResult CerrarSesion()
+        {
+            HttpContext.Session.Clear();
+            TempData["SuccessMessage"] = "Has cerrado sesión correctamente. El acceso al sistema ha sido bloqueado.";
+            return RedirectToAction("Index");
         }
 
         // -----------------------------------------------------------------------------
@@ -39,7 +83,6 @@ namespace MiSalonBellezaNicteHa.Controllers
         // -----------------------------------------------------------------------------
         public IActionResult CrearCuenta()
         {
-            // Muestra el formulario para crear una nueva cuenta en el sistema
             return View("~/Views/Auth/CrearCuenta.cshtml");
         }
 
@@ -49,27 +92,14 @@ namespace MiSalonBellezaNicteHa.Controllers
         [HttpPost]
         public IActionResult RegistrarUsuario(string nombre, string correo, string password, string confirmarPassword)
         {
-            // Verificación de contraseñas coincidentes
             if (password != confirmarPassword)
             {
                 ViewData["ErrorMessage"] = "Las contraseñas no coinciden. Verifícalas e intenta de nuevo.";
                 return View("~/Views/Auth/CrearCuenta.cshtml");
             }
 
-            // Mensaje de éxito tras el registro
             TempData["SuccessMessage"] = $"¡Cuenta creada con éxito para {nombre}! Ya puedes iniciar sesión.";
             return RedirectToAction("Index");
-        }
-
-        // -----------------------------------------------------------------------------
-        // ACCIÓN: IniciarSesionGoogle (Simula el inicio de sesión / emparejamiento con Google)
-        // -----------------------------------------------------------------------------
-        public IActionResult IniciarSesionGoogle()
-        {
-            // En una aplicación real, aquí se usaría Microsoft.AspNetCore.Authentication.Google
-            // Simulamos el emparejamiento con Google mandando al usuario logueado a Servicios.
-            TempData["SuccessMessage"] = "¡Sesión iniciada correctamente con tu cuenta de Google!";
-            return RedirectToAction("Index", "Servicios");
         }
     }
 }

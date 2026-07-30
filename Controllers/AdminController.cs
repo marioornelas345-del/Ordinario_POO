@@ -37,6 +37,10 @@ namespace MiSalonBellezaNicteHa.Controllers
         // =========================================================================================
         public IActionResult Index()
         {
+            if (HttpContext.Session.GetString("UsuarioLogueado") == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             // 1. Carga de Citas registradas en la base de datos SQL Server
             var citasList = _context.Citas.ToList();
 

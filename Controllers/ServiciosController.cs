@@ -97,6 +97,13 @@ namespace MiSalonBellezaNicteHa.Controllers
         // -----------------------------------------------------------------------------
         public IActionResult Index(string filtro = "Todos")
         {
+            // Bloqueo de seguridad: Si no ha iniciado sesión, no puede pasar
+            if (HttpContext.Session.GetString("UsuarioLogueado") == null)
+            {
+                TempData["ErrorMessage"] = "Debes iniciar sesión para acceder al sistema.";
+                return RedirectToAction("Index", "Home");
+            }
+
             ViewData["FiltroActual"] = filtro;
             var resultados = CatálogoServicios.AsEnumerable();
 
