@@ -58,9 +58,6 @@
                     @if (!string.IsNullOrEmpty(usuarioLogueado))
                     {
                         <div class="d-flex align-items-center gap-2">
-                            <span class="badge @(esAdmin ? "bg-warning text-dark" : "bg-info text-dark") px-3 py-2">
-                                @(esAdmin ? "👑 Administrador" : "👤 Cliente"): @usuarioLogueado
-                            </span>
                             <a href="/Home/CerrarSesion" class="btn btn-outline-danger btn-sm rounded-pill font-weight-bold">Cerrar Sesión</a>
                         </div>
                     }
