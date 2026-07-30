@@ -43,12 +43,6 @@
                                 <a class="nav-link text-warning fw-bold" asp-controller="Admin" asp-action="Index">Administrador</a>
                             </li>
                         }
-                        else
-                        {
-                            <li class="nav-item">
-                                <span class="nav-link text-white-50 fst-italic">Sistema Bloqueado - Inicia sesión para navegar</span>
-                            </li>
-                        }
                     </ul>
 
                     @if (!string.IsNullOrEmpty(usuarioLogueado))
