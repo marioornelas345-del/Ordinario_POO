@@ -1,6 +1,8 @@
 @using Microsoft.AspNetCore.Http
 @{
     var usuarioLogueado = Context.Session.GetString("UsuarioLogueado");
+    bool esAdmin = !string.IsNullOrEmpty(usuarioLogueado) && 
+                  (usuarioLogueado.ToLower().Contains("admin") || usuarioLogueado == "NICTEha@gamil.com");
 }
 <!DOCTYPE html>
 <html lang="es">
@@ -24,31 +26,41 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if (!string.IsNullOrEmpty(usuarioLogueado))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-controller="Servicios" asp-action="Index">Servicios</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-controller="Citas" asp-action="Index">Citas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-controller="Pagos" asp-action="Index">Pagos</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-controller="Ubicacion" asp-action="Index">Ubicación</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light" asp-controller="Perfil" asp-action="Index">Mi Perfil (Cliente)</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-warning fw-bold" asp-controller="Admin" asp-action="Index">Administrador</a>
-                            </li>
+                            if (esAdmin)
+                            {
+                                <!-- MENÚ EXCLUSIVO DEL ADMINISTRADOR -->
+                                <li class="nav-item">
+                                    <a class="nav-link text-warning fw-bold fs-5" asp-controller="Admin" asp-action="Index">Panel Administrador</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <!-- MENÚ EXCLUSIVO DE CLIENTES -->
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-controller="Servicios" asp-action="Index">Servicios</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-controller="Citas" asp-action="Index">Citas</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-controller="Pagos" asp-action="Index">Pagos</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-controller="Ubicacion" asp-action="Index">Ubicación</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-light" asp-controller="Perfil" asp-action="Index">Mi Perfil (Cliente)</a>
+                                </li>
+                            }
                         }
                     </ul>
 
                     @if (!string.IsNullOrEmpty(usuarioLogueado))
                     {
                         <div class="d-flex align-items-center gap-2">
-                            <span class="text-white small me-2">👤 @usuarioLogueado</span>
+                            <span class="badge @(esAdmin ? "bg-warning text-dark" : "bg-info text-dark") px-3 py-2">
+                                @(esAdmin ? "👑 Administrador" : "👤 Cliente"): @usuarioLogueado
+                            </span>
                             <a href="/Home/CerrarSesion" class="btn btn-outline-danger btn-sm rounded-pill font-weight-bold">Cerrar Sesión</a>
                         </div>
                     }

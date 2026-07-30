@@ -37,10 +37,19 @@ namespace MiSalonBellezaNicteHa.Controllers
         // =========================================================================================
         public IActionResult Index()
         {
-            if (HttpContext.Session.GetString("UsuarioLogueado") == null)
+            var usuario = HttpContext.Session.GetString("UsuarioLogueado");
+            if (string.IsNullOrEmpty(usuario))
             {
                 return RedirectToAction("Index", "Home");
             }
+
+            // Bloqueo de ROL: Si es cliente, NO puede entrar al panel administrador
+            if (!usuario.ToLower().Contains("admin") && usuario != "NICTEha@gamil.com")
+            {
+                TempData["ErrorMessage"] = "Acceso denegado: Esta sección es exclusiva para la cuenta Administrador.";
+                return RedirectToAction("Index", "Servicios");
+            }
+
             // 1. Carga de Citas registradas en la base de datos SQL Server
             var citasList = _context.Citas.ToList();
 
