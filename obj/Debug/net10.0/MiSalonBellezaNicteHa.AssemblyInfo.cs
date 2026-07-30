@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MiSalonBellezaNicteHa")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ba1584740f369be4991ae75100a839766b023ccb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7d85938c7f8aee9ce4e3cb2d8ef5867eb87c6e12")]
 [assembly: System.Reflection.AssemblyProductAttribute("MiSalonBellezaNicteHa")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MiSalonBellezaNicteHa")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
