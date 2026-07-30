@@ -448,3 +448,10 @@ C:\Users\mario\MiSalonBellezaNicteHa\obj\Debug\net10.0\refint\MiSalonBellezaNict
 C:\Users\mario\MiSalonBellezaNicteHa\obj\Debug\net10.0\MiSalonBellezaNicteHa.pdb
 C:\Users\mario\MiSalonBellezaNicteHa\obj\Debug\net10.0\MiSalonBellezaNicteHa.genruntimeconfig.cache
 C:\Users\mario\MiSalonBellezaNicteHa\obj\Debug\net10.0\ref\MiSalonBellezaNicteHa.dll
+C:\Users\mario\MiSalonBellezaNicteHa\bin\Debug\net10.0\publish\web.config
+C:\Users\mario\MiSalonBellezaNicteHa\bin\Debug\net10.0\publish\appsettings.Development.json
+C:\Users\mario\MiSalonBellezaNicteHa\bin\Debug\net10.0\publish\appsettings.json
+C:\Users\mario\MiSalonBellezaNicteHa\bin\Debug\net10.0\publish\MiSalonBellezaNicteHa.deps.json
+C:\Users\mario\MiSalonBellezaNicteHa\bin\Debug\net10.0\publish\MiSalonBellezaNicteHa.runtimeconfig.json
+C:\Users\mario\MiSalonBellezaNicteHa\bin\Debug\net10.0\publish\MiSalonBellezaNicteHa.staticwebassets.endpoints.json
+C:\Users\mario\MiSalonBellezaNicteHa\obj\Debug\net10.0\MiSalonBellezaNicteHa.sourcelink.json
